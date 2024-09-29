@@ -2,12 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import html2canvas from 'html2canvas';
 
 const WebGLInitializer = () => {
 	const mountRef = useRef<HTMLDivElement | null>(null);
-	const [mousePosition, setMousePosition] = useState<THREE.Vector2>(
-		new THREE.Vector2(0, 0)
-	);
 
 	useEffect(() => {
 		const scene = new THREE.Scene();
@@ -26,52 +24,75 @@ const WebGLInitializer = () => {
 			mountRef.current.appendChild(renderer.domElement);
 		}
 
-		// Create a background texture with sharper text
-		const createBackgroundTexture = (width: number, height: number) => {
-			const canvas = document.createElement('canvas');
-			const ctx = canvas.getContext('2d');
+		const canvas = document.createElement('canvas');
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 
-			// Increase canvas size for higher resolution
-			const scale = 2; // You can adjust this value for even higher resolution
-			canvas.width = width * scale;
-			canvas.height = height * scale;
 
-			if (ctx) {
-				ctx.scale(scale, scale); // Scale the context to match the increased canvas size
-				ctx.fillStyle = '#000000';
-				ctx.fillRect(0, 0, width, height);
+		const fontFace = new FontFace(
+			'Grotesk',
+			'url(/AlteHaasGroteskBold.ttf)'
+		);
+		document.fonts.add(fontFace);
 
-				// Calculate font size based on screen dimensions
-				const baseFontSize = width * 0.19; // 18.5% of the smaller dimension
-				ctx.font = `bold ${baseFontSize}px Grotesk`;
+		const textDiv = document.createElement('div');
+		textDiv.style.position = 'absolute';
+		textDiv.style.left = '0';
+		textDiv.style.top = '0';
+		textDiv.style.width = '100%';
+		textDiv.style.height = '100%';
+		textDiv.style.fontSize = `${window.innerWidth * 0.155}px`;
+		textDiv.style.fontWeight = 'bold';
+		textDiv.style.fontFamily = 'Grotesk, sans-serif';
+		textDiv.style.color = 'rgba(255,255,255,1)';
+		textDiv.style.display = 'flex';
+		textDiv.style.justifyContent = 'center';
+		textDiv.style.alignItems = 'center';
+		textDiv.textContent = 'BASE AI';
+		textDiv.style.zIndex = '-1';
 
-				ctx.fillStyle = '#ffffff';
-				ctx.textAlign = 'center';
-				ctx.textBaseline = 'middle';
+		const PIXEL_RATIO = 2;
+		const createHighResBackgroundTexture = async (
+			width: number,
+			height: number
+		) => {
+			const scale = PIXEL_RATIO;
+			textDiv.style.width = `${width}px`;
+			textDiv.style.height = `${height}px`;
+			textDiv.style.fontSize = `${width * 0.209}px`;
 
-				// Use crisp edges for text rendering
-				ctx.imageSmoothingEnabled = false;
+			await document.fonts.ready;
+			document.body.appendChild(textDiv);
 
-				// Draw the text
-				ctx.fillText('BASE AI', width / 2, height / 2);
-			}
+			const canvas = await html2canvas(textDiv, {
+				backgroundColor: '#000000',
+				scale: scale,
+				width: width,
+				height: height,
+				logging: false,
+				foreignObjectRendering: true,
+				// useCORS: true
+			});
 
-			const bgTexture = new THREE.CanvasTexture(canvas);
-			bgTexture.minFilter = THREE.LinearFilter;
-			bgTexture.magFilter = THREE.LinearFilter;
-			bgTexture.wrapS = THREE.RepeatWrapping;
-			bgTexture.wrapT = THREE.RepeatWrapping;
-			return bgTexture;
+			const texture = new THREE.CanvasTexture(canvas);
+			texture.wrapS = THREE.RepeatWrapping;
+			texture.wrapT = THREE.RepeatWrapping;
+			return texture;
 		};
 
-		// Initial background texture creation
-		let bgTexture = createBackgroundTexture(
-			window.innerWidth,
-			window.innerHeight
-		);
-		scene.background = bgTexture;
+		const createInitialTexture = async () => {
+			const texture = await createHighResBackgroundTexture(
+				window.innerWidth,
+				window.innerHeight
+			);
+			scene.background = texture;
+			if (material.uniforms && material.uniforms.u_background) {
+				material.uniforms.u_background.value = texture;
+			}
+		};
 
-		// Create a sphere geometry
+		createInitialTexture();
+
 		const geometry = new THREE.SphereGeometry(0.75, 256, 256);
 
 		const textureLoader = new THREE.TextureLoader();
@@ -100,7 +121,7 @@ const WebGLInitializer = () => {
 						window.innerHeight
 					)
 				},
-				u_background: { value: bgTexture },
+				u_background: { value: null },
 				u_viewVector: { value: camera.position },
 				envMap: { value: envMap },
 				roughness: { value: 0.0 },
@@ -416,15 +437,6 @@ const WebGLInitializer = () => {
 		const raycaster = new THREE.Raycaster();
 		const mouse = new THREE.Vector2();
 
-		// Mouse move event handler
-		const onMouseMove = (event: MouseEvent) => {
-			mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-			mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-			setMousePosition(new THREE.Vector2(mouse.x, mouse.y));
-		};
-
-		window.addEventListener('mousemove', onMouseMove);
-
 		// Animation loop
 		const animate = () => {
 			requestAnimationFrame(animate);
@@ -467,19 +479,24 @@ const WebGLInitializer = () => {
 			updateCameraPosition();
 
 			// Update background texture with new dimensions
-			bgTexture = createBackgroundTexture(width, height);
-			scene.background = bgTexture;
-
-			if (material.uniforms && material.uniforms.u_background) {
-				material.uniforms.u_background.value = bgTexture;
-			}
+			createHighResBackgroundTexture(width, height).then(texture => {
+				scene.background = texture;
+				if (material.uniforms && material.uniforms.u_background) {
+					material.uniforms.u_background.value = texture;
+				}
+			});
+			createHighResBackgroundTexture(width, height).then(texture => {
+				scene.background = texture;
+				if (material.uniforms && material.uniforms.u_background) {
+					material.uniforms.u_background.value = texture;
+				}
+			});
 		};
 
 		window.addEventListener('resize', onWindowResize);
 
 		return () => {
 			window.removeEventListener('resize', onWindowResize);
-			window.removeEventListener('mousemove', onMouseMove);
 			if (mountRef.current) {
 				mountRef.current.removeChild(renderer.domElement);
 			}
