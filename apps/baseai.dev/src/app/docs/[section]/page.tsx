@@ -1,5 +1,7 @@
 export const runtime = 'edge';
 
+export const runtime = 'edge';
+
 import Content from '../../../components/content';
 import docsContent from '../../../../content/docs/docs.json';
 import { ContentT } from '@/types/markdown';
