@@ -28,12 +28,20 @@ const WebGLInitializer = () => {
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 
-
 		const fontFace = new FontFace(
 			'Grotesk',
 			'url(/AlteHaasGroteskBold.ttf)'
 		);
 		document.fonts.add(fontFace);
+
+		const style = document.createElement('style');
+		style.innerHTML = `
+			  @import url(/AlteHaasGroteskBold.ttf);
+			  body {
+			    font-family: 'Grotesk', sans-serif;
+			  }
+			`;
+		document.head.appendChild(style);
 
 		const textDiv = document.createElement('div');
 		textDiv.style.position = 'absolute';
@@ -70,7 +78,7 @@ const WebGLInitializer = () => {
 				width: width,
 				height: height,
 				logging: false,
-				foreignObjectRendering: true,
+				foreignObjectRendering: true
 				// useCORS: true
 			});
 
