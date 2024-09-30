@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 import Content from '../../../../components/content';
 import learnContent from '../../../../../content/learn/learn.json';
 import { ContentT } from '@/types/markdown';
