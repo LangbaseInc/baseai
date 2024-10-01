@@ -89,7 +89,6 @@ const WebGLInitializer = () => {
 						);
 					});
 				}
-				// useCORS: true
 			});
 
 			const texture = new THREE.CanvasTexture(canvas);
