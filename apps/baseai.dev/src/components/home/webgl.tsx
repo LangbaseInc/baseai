@@ -51,7 +51,7 @@ const WebGLInitializer = () => {
 		textDiv.style.height = '100%';
 		textDiv.style.fontSize = `${window.innerWidth * 0.155}px`;
 		textDiv.style.fontWeight = 'bold';
-		textDiv.style.fontFamily = 'Grotesk, sans-serif';
+		textDiv.style.fontFamily = 'Grotesk';
 		textDiv.style.color = 'rgba(255,255,255,1)';
 		textDiv.style.display = 'flex';
 		textDiv.style.justifyContent = 'center';
@@ -78,7 +78,17 @@ const WebGLInitializer = () => {
 				width: width,
 				height: height,
 				logging: false,
-				foreignObjectRendering: true
+				foreignObjectRendering: true,
+				onclone: document => {
+					Array.from(document.querySelectorAll('*')).forEach(e => {
+						let existingStyle = e.getAttribute('style') || '';
+						e.setAttribute(
+							'style',
+							existingStyle +
+								'; font-family: Grotesk, sans-serif !important'
+						);
+					});
+				}
 				// useCORS: true
 			});
 
