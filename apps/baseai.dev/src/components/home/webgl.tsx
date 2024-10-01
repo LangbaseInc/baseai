@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import html2canvas from 'html2canvas';
+import '../../styles/webgl.css';
 
 const WebGLInitializer = () => {
 	const mountRef = useRef<HTMLDivElement | null>(null);
@@ -28,20 +29,20 @@ const WebGLInitializer = () => {
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 
-		const fontFace = new FontFace(
-			'Grotesk',
-			'url(/AlteHaasGroteskBold.ttf)'
-		);
-		document.fonts.add(fontFace);
+		// const fontFace = new FontFace(
+		// 	'Grotesk',
+		// 	'url(/AlteHaasGroteskBold.ttf)'
+		// );
+		// document.fonts.add(fontFace);
 
-		const style = document.createElement('style');
-		style.innerHTML = `
-			  @import url(/AlteHaasGroteskBold.ttf);
-			  body {
-			    font-family: 'Grotesk', sans-serif;
-			  }
-			`;
-		document.head.appendChild(style);
+		// const style = document.createElement('style');
+		// style.innerHTML = `
+		// 	  @import url(/AlteHaasGroteskBold.ttf);
+		// 	  body {
+		// 	    font-family: 'Grotesk', sans-serif;
+		// 	  }
+		// 	`;
+		// document.head.appendChild(style);
 
 		const textDiv = document.createElement('div');
 		textDiv.style.position = 'absolute';
@@ -54,6 +55,7 @@ const WebGLInitializer = () => {
 		textDiv.style.fontFamily = 'Grotesk';
 		textDiv.style.color = 'rgba(255,255,255,1)';
 		textDiv.style.display = 'flex';
+		// textDiv.style.lineHeight = '0px';
 		textDiv.style.justifyContent = 'center';
 		textDiv.style.alignItems = 'center';
 		textDiv.textContent = 'BASE AI';
@@ -67,10 +69,13 @@ const WebGLInitializer = () => {
 			const scale = PIXEL_RATIO;
 			textDiv.style.width = `${width}px`;
 			textDiv.style.height = `${height}px`;
-			textDiv.style.fontSize = `${width * 0.209}px`;
+			textDiv.style.fontSize = `${width * 0.192}px`;
 
 			await document.fonts.ready;
 			document.body.appendChild(textDiv);
+
+			const lineHeight = window.getComputedStyle(textDiv).lineHeight; // e.g., "20px"
+			const y = parseFloat(lineHeight);
 
 			const canvas = await html2canvas(textDiv, {
 				backgroundColor: '#000000',
@@ -78,7 +83,8 @@ const WebGLInitializer = () => {
 				width: width,
 				height: height,
 				logging: false,
-				foreignObjectRendering: true,
+				y: y / 6,
+				// foreignObjectRendering: true,
 				onclone: document => {
 					Array.from(document.querySelectorAll('*')).forEach(e => {
 						let existingStyle = e.getAttribute('style') || '';

@@ -75,6 +75,9 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+	img {
+		display: inline-block !important;
+	}
 }
 
 ::selection {
@@ -111,26 +114,8 @@ html {
 }
 
 @font-face {
-	font-family: 'Grotesk';
-	src: url('/AlteHaasGroteskBold.ttf') format('truetype');
+	font-family: "Grotesk";
+	src: url("/AlteHaasGroteskBold.ttf") format("truetype");
 	font-weight: normal;
 	font-style: normal;
 }
-
-.hero-content {
-	font-family: 'Grotesk';
-}
-
-.helvetica {
-	font-family: 'Helvetica';
-}
-
-/* global.css */
-@tailwind base;
-@layer base {
-  img {
-    @apply inline-block;
-  }
-}
-@tailwind components;
-@tailwind utilities;
