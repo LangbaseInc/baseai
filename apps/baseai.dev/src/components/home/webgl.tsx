@@ -50,7 +50,6 @@ const WebGLInitializer = () => {
 		textDiv.style.top = '0';
 		textDiv.style.width = '100%';
 		textDiv.style.height = '100%';
-		textDiv.style.fontSize = `${window.innerWidth * 0.155}px`;
 		textDiv.style.fontWeight = 'bold';
 		textDiv.style.fontFamily = 'Grotesk';
 		textDiv.style.color = 'rgba(255,255,255,1)';
@@ -83,7 +82,7 @@ const WebGLInitializer = () => {
 				width: width,
 				height: height,
 				logging: false,
-				y: y / 6,
+				y: y * .1,
 				// foreignObjectRendering: true,
 				onclone: document => {
 					Array.from(document.querySelectorAll('*')).forEach(e => {
