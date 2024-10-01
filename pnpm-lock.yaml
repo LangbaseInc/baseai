@@ -44,7 +44,7 @@ importers:
         version: 2.1.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1)(terser@5.34.1)
+        version: 1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1(canvas@2.11.2))(terser@5.34.1)
 
   apps/baseai.dev:
     dependencies:
@@ -446,7 +446,6 @@ importers:
       '@remix-run/dev':
         specifier: 2.12.0
         version: 2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12)
-        version: 2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12)
       '@types/react':
         specifier: ^18.2.20
         version: 18.3.11
@@ -461,7 +460,6 @@ importers:
         version: 6.21.0(eslint@8.57.1)(typescript@5.6.2)
       '@vercel/remix':
         specifier: 2.12.0
-        version: 2.12.0(@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12))(@remix-run/node@2.12.0(typescript@5.6.2))(@remix-run/server-runtime@2.12.1(typescript@5.6.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
         version: 2.12.0(@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12))(@remix-run/node@2.12.0(typescript@5.6.2))(@remix-run/server-runtime@2.12.1(typescript@5.6.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       autoprefixer:
         specifier: ^10.4.20
@@ -646,7 +644,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1)(terser@5.34.1)
+        version: 1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1(canvas@2.11.2))(terser@5.34.1)
 
   packages/core:
     dependencies:
@@ -704,7 +702,7 @@ importers:
         version: 5.6.2
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1)(terser@5.34.1)
+        version: 1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1(canvas@2.11.2))(terser@5.34.1)
 
   packages/testing:
     dependencies:
@@ -3700,10 +3698,6 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  base64-arraybuffer@1.0.2:
-    resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
-    engines: {node: '>= 0.6.0'}
-
   base-64@1.0.0:
     resolution: {integrity: sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==}
 
@@ -4162,9 +4156,6 @@ packages:
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
-
-  css-line-break@2.1.0:
-    resolution: {integrity: sha512-FHcKFCZcAha3LwfVBhCQbW2nCNbkZXn7KVUJcsT5/P8YmfsVja0FMPJr0B903j/E69HUphKiV9iQArX8SDYA4w==}
 
   css-line-break@2.1.0:
     resolution: {integrity: sha512-FHcKFCZcAha3LwfVBhCQbW2nCNbkZXn7KVUJcsT5/P8YmfsVja0FMPJr0B903j/E69HUphKiV9iQArX8SDYA4w==}
@@ -5628,10 +5619,6 @@ packages:
   html-encoding-sniffer@4.0.0:
     resolution: {integrity: sha512-Y22oTqIU4uuPgEemfz7NDJz6OeKf12Lsu+QC+s3BVpda64lTiMYCyGwg5ki4vFxkMwQdeZDl2adZoqUgdFuTgQ==}
     engines: {node: '>=18'}
-
-  html2canvas@1.4.1:
-    resolution: {integrity: sha512-fPU6BHNpsyIhr8yyMpTLLxAbkaK8ArIBcmZIRiBLiDhjeqvXolaEmDGmELFuX9I4xDcaKKcJl+TKZLqruBbmWA==}
-    engines: {node: '>=8.0.0'}
 
   html-escaper@3.0.3:
     resolution: {integrity: sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ==}
@@ -8412,9 +8399,6 @@ packages:
   text-segmentation@1.0.3:
     resolution: {integrity: sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw==}
 
-  text-segmentation@1.0.3:
-    resolution: {integrity: sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw==}
-
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
@@ -8869,9 +8853,6 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
-
-  utrie@1.0.2:
-    resolution: {integrity: sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==}
 
   utrie@1.0.2:
     resolution: {integrity: sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==}
@@ -11231,7 +11212,6 @@ snapshots:
   '@radix-ui/rect@1.1.0': {}
 
   '@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12)':
-  '@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12)':
     dependencies:
       '@babel/core': 7.25.7
       '@babel/generator': 7.25.7
@@ -12174,9 +12154,7 @@ snapshots:
       - supports-color
 
   '@vercel/remix@2.12.0(@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12))(@remix-run/node@2.12.0(typescript@5.6.2))(@remix-run/server-runtime@2.12.1(typescript@5.6.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-  '@vercel/remix@2.12.0(@remix-run/dev@2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12))(@remix-run/node@2.12.0(typescript@5.6.2))(@remix-run/server-runtime@2.12.1(typescript@5.6.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@remix-run/dev': 2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12)
       '@remix-run/dev': 2.12.0(@remix-run/react@2.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.2))(@remix-run/serve@2.12.0(typescript@5.6.2))(@types/node@22.7.4)(terser@5.34.1)(ts-node@10.9.1(@types/node@22.7.4)(typescript@5.6.2))(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(wrangler@3.78.12)
       '@remix-run/node': 2.12.0(typescript@5.6.2)
       '@remix-run/server-runtime': 2.12.0(typescript@5.6.2)
@@ -12808,8 +12786,6 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  base64-arraybuffer@1.0.2: {}
-
   base-64@1.0.0: {}
 
   base64-arraybuffer@1.0.2: {}
@@ -13396,10 +13372,6 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-
-  css-line-break@2.1.0:
-    dependencies:
-      utrie: 1.0.2
 
   css-line-break@2.1.0:
     dependencies:
@@ -15245,11 +15217,6 @@ snapshots:
   html-encoding-sniffer@4.0.0:
     dependencies:
       whatwg-encoding: 3.1.1
-
-  html2canvas@1.4.1:
-    dependencies:
-      css-line-break: 2.1.0
-      text-segmentation: 1.0.3
 
   html-escaper@3.0.3: {}
 
@@ -18663,10 +18630,6 @@ snapshots:
     dependencies:
       utrie: 1.0.2
 
-  text-segmentation@1.0.3:
-    dependencies:
-      utrie: 1.0.2
-
   text-table@0.2.0: {}
 
   thenify-all@1.6.0:
@@ -19182,10 +19145,6 @@ snapshots:
     dependencies:
       base64-arraybuffer: 1.0.2
 
-  utrie@1.0.2:
-    dependencies:
-      base64-arraybuffer: 1.0.2
-
   uuid@10.0.0: {}
 
   uuid@3.3.2: {}
@@ -19312,7 +19271,6 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.34.1
 
-  vitest@1.6.0(@edge-runtime/vm@4.0.3)(@types/node@22.7.4)(jsdom@25.0.1)(terser@5.34.1):
   vitefu@1.0.2(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1)):
     optionalDependencies:
       vite: 5.4.8(@types/node@22.7.4)(terser@5.34.1)
