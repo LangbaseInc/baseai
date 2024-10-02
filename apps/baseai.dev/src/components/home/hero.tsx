@@ -108,6 +108,7 @@ function Content() {
 					</div>
 					<div className="hidden text-muted-foreground/70 w-full items-center justify-center text-lg lg:mb-5 lg:flex lg:justify-end">
 						<Socials />
+						
 					</div>
 				</div>
 			</div>
