@@ -87,7 +87,7 @@ function Content() {
 					</div>
 
 					<CopyableCommand command="npx baseai@latest init" />
-					<div className="flex text-muted-foreground/70 w-full items-center justify-center text-md lg:hidden">
+					<div className="text-md flex w-full items-center justify-center text-muted-foreground/70 lg:hidden">
 						<Socials />
 					</div>
 				</div>
@@ -106,9 +106,8 @@ function Content() {
 						</span>
 						<div className="ml-4 hidden size-4 rounded-full bg-muted-foreground/70 lg:block"></div>
 					</div>
-					<div className="hidden text-muted-foreground/70 w-full items-center justify-center text-lg lg:mb-5 lg:flex lg:justify-end">
+					<div className="hidden w-full items-center justify-center text-lg text-muted-foreground/70 lg:mb-5 lg:flex lg:justify-end">
 						<Socials />
-						
 					</div>
 				</div>
 			</div>
@@ -141,7 +140,7 @@ function Socials() {
 				</svg>
 			</Link>
 			<Link
-				href={'https://discord.com/invite/qz6VsMtvXU'}
+				href={'https://langbase.com/discord'}
 				target="_blank"
 				rel="noopener noreferrer"
 			>
