@@ -73,7 +73,7 @@
 		"@types/uuid": "^10.0.0",
 		"enquirer": "^2.4.1",
 		"eslint": "^8.56.0",
-		"eslint-config-next": "^14.0.4",
+		"eslint-config-next": "^14.2.15",
 		"prettier": "^3.1.1",
 		"prettier-plugin-tailwindcss": "^0.5.11",
 		"sharp": "0.33.1",
