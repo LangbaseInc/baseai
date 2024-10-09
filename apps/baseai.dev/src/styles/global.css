@@ -124,21 +124,3 @@ html {
 .helvetica {
 	font-family: 'Helvetica';
 }
-
-.nav::-webkit-scrollbar {
-	width: 5px;
-}
-
-.nav::-webkit-scrollbar-track {
-	/* box-shadow: inset 0 0 2px rgb(96, 96, 96);  */
-	border-radius: 10px;
-}
-
-.nav::-webkit-scrollbar-thumb {
-	background: rgb(66, 66, 66); 
-	border-radius: 10px;
-}
-
-.nav::-webkit-scrollbar-thumb:hover {
-	background: #626262; 
-}
