@@ -85,8 +85,7 @@ function HeaderLinks() {
 				variant={'ghost'}
 			>
 				<GithubIcon className="size-4 text-black dark:text-white" />
-				<span className="leading-none">Star</span>
-				<OpenLink className="size-3 text-black dark:text-white" />
+				<span className="leading-none flex-grow truncate">Star us on Github</span>
 			</Anchor>
 		</>
 	);
@@ -97,11 +96,11 @@ function Socials() {
 		<>
 			<Link
 				className="hidden md:block"
-				href={'https://github.com/LangbaseInc/'}
+				href={'https://x.com/langbaseinc'}
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<GithubIcon className="size-4 text-black/75 dark:text-white/75" />
+				<TwitterIcon className="size-4 text-black/75 dark:text-white/75" />
 			</Link>
 			<Link
 				className="hidden md:block"
@@ -113,11 +112,11 @@ function Socials() {
 			</Link>
 			<Link
 				className="hidden md:block"
-				href={'https://x.com/langbaseinc'}
+				href={'https://github.com/LangbaseInc/'}
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<TwitterIcon className="size-4 text-black/75 dark:text-white/75" />
+				<GithubIcon className="size-4 text-black/75 dark:text-white/75" />
 			</Link>
 		</>
 	);
@@ -156,26 +155,26 @@ export const Header = forwardRef<
 		>
 			<div className="xbg-zinc-900/7.5 absolute inset-x-0 top-full h-px transition md:hidden dark:bg-white/7.5" />
 
-			<div className='flex items-center'>
+			<div className="flex items-center">
 				<h2 className="flex items-center text-2xl font-bold leading-7 text-foreground sm:truncate sm:text-2xl sm:tracking-tight">
 					<IconDocs
 						className="mr-4 hidden h-7 w-7 text-muted-foreground/50 lg:block"
 						aria-hidden="true"
 					/>
-					<div className="mr-2 md:mr-4 lg:hidden">
+					<div className="mr-3 md:mr-4 lg:hidden">
 						<MobileNavigation />
 					</div>
-					<div className='hidden md:block'>{currentTitle}</div>
+					<div className="hidden md:block">{currentTitle}</div>
 					<Link
 						href="/"
 						aria-label="Home"
-						className="block font-bold text-black md:hidden dark:text-white"
+						className="block w-full font-bold text-black md:hidden dark:text-white"
 					>
-						<BaseAILogo className="w-[30%] sm:w-[22.5%]" />
+						<BaseAILogo className="w-[10rem]" />
 					</Link>
 				</h2>
 			</div>
-			<div className="flex w-full justify-between md:w-[60%] md:justify-end  md:space-x-6">
+			<div className="flex w-full justify-end md:w-[70%] md:space-x-6">
 				<Search />
 				<div className="flex hidden items-center justify-center md:flex xl:hidden">
 					<MobileSearch />

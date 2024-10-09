@@ -477,7 +477,7 @@ export function Search() {
 				{...buttonProps}
 			>
 				<SearchIcon className="h-5 w-5 flex-shrink-0 stroke-current" />
-				<span className="flex-grow truncate">Find something...</span>
+				<span className="flex-start truncate">Find something...</span>
 				<kbd className="ml-auto flex-shrink-0 text-2xs text-muted-foreground">
 					<kbd className="font-sans">{modifierKey}</kbd>
 					<kbd className="font-sans">K</kbd>

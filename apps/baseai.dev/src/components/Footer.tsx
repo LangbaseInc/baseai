@@ -82,11 +82,11 @@ function Socials() {
 		<>
 			<Link
 				className="hidden md:block"
-				href={'https://github.com/LangbaseInc/'}
+				href={'https://x.com/langbaseinc'}
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<GithubIcon className="size-4 text-black/35 dark:text-white/35" />
+				<TwitterIcon className="size-4 text-black/35 dark:text-white/35" />
 			</Link>
 			<Link
 				className="hidden md:block"
@@ -98,11 +98,11 @@ function Socials() {
 			</Link>
 			<Link
 				className="hidden md:block"
-				href={'https://x.com/langbaseinc'}
+				href={'https://github.com/LangbaseInc/'}
 				target="_blank"
 				rel="noopener noreferrer"
 			>
-				<TwitterIcon className="size-4 text-black/35 dark:text-white/35" />
+				<GithubIcon className="size-4 text-black/35 dark:text-white/35" />
 			</Link>
 		</>
 	);
