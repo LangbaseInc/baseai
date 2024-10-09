@@ -83,6 +83,7 @@ const WebGLInitializer = () => {
 				height: height,
 				logging: false,
 				y: y * 0,
+				x: 0,
 				// foreignObjectRendering: true,
 				onclone: document => {
 					Array.from(document.querySelectorAll('*')).forEach(e => {
