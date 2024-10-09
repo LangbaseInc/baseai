@@ -15,6 +15,10 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import BaseAILogo from './baseai-logo';
 import { Anchor } from './ui/anchor';
 import { IconDocs } from './ui/iconists/icon-docs';
+import { GithubIcon } from './icons/GithubIcon';
+import { TwitterIcon } from './icons/TwitterIcon';
+import { DiscordIcon } from './icons/DiscordIcon';
+import { OpenLink } from './icons/OpenLink';
 
 /**
  * Retrieves the section title based on the provided pathname.
@@ -68,20 +72,53 @@ function HeaderLinks() {
 	return (
 		<>
 			<Anchor
-				href={'https://github.com/LangbaseInc/baseai'}
-				target="_blank"
-				className="hidden w-auto font-semibold lg:flex "
-				variant={'ghost'}
-			>
-				★ BaseAI
-			</Anchor>
-			<Anchor
 				href={href}
 				className="w-28 font-semibold"
 				variant={'default'}
 			>
 				{text}
 			</Anchor>
+			<Anchor
+				href={'https://github.com/LangbaseInc/baseai'}
+				target="_blank"
+				className="hidden w-auto font-normal outline outline-[1.5px] outline-black/35 lg:flex lg:items-center dark:outline-white/35 "
+				variant={'ghost'}
+			>
+				<GithubIcon className="size-4 text-black dark:text-white" />
+				<span className="leading-none">Star</span>
+				<OpenLink className="size-3 text-black dark:text-white" />
+			</Anchor>
+		</>
+	);
+}
+
+function Socials() {
+	return (
+		<>
+			<Link
+				className="hidden md:block"
+				href={'https://github.com/LangbaseInc/'}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<GithubIcon className="size-4 text-black/75 dark:text-white/75" />
+			</Link>
+			<Link
+				className="hidden md:block"
+				href={'https://langbase.com/discord'}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<DiscordIcon className="size-4 text-black/75 dark:text-white/75" />
+			</Link>
+			<Link
+				className="hidden md:block"
+				href={'https://x.com/langbaseinc'}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<TwitterIcon className="size-4 text-black/75 dark:text-white/75" />
+			</Link>
 		</>
 	);
 }
@@ -117,36 +154,44 @@ export const Header = forwardRef<
 				} as React.CSSProperties
 			}
 		>
-			<div className="xbg-zinc-900/7.5 xdark:bg-white/7.5 absolute inset-x-0 top-full h-px transition md:hidden" />
+			<div className="xbg-zinc-900/7.5 absolute inset-x-0 top-full h-px transition md:hidden dark:bg-white/7.5" />
 
-			<div className="hidden md:block">
-				<h2 className="flex items-center text-2xl font-bold leading-7 text-foreground sm:truncate sm:text-3xl sm:tracking-tight">
+			<div className='flex items-center'>
+				<h2 className="flex items-center text-2xl font-bold leading-7 text-foreground sm:truncate sm:text-2xl sm:tracking-tight">
 					<IconDocs
-						className="mr-4 h-7 w-7 text-muted-foreground/50"
+						className="mr-4 hidden h-7 w-7 text-muted-foreground/50 lg:block"
 						aria-hidden="true"
 					/>
-					{currentTitle}
-				</h2>
-			</div>
-			<div className="flex w-full justify-between md:w-1/2 md:justify-end  md:space-x-6">
-				<Search />
-				<div className="flex items-center gap-5 lg:hidden">
-					<MobileNavigation />
+					<div className="mr-2 md:mr-4 lg:hidden">
+						<MobileNavigation />
+					</div>
+					<div className='hidden md:block'>{currentTitle}</div>
 					<Link
 						href="/"
 						aria-label="Home"
-						className="font-bold text-black dark:text-white"
+						className="block font-bold text-black md:hidden dark:text-white"
 					>
-						<BaseAILogo width="30%" />
+						<BaseAILogo className="w-[30%] sm:w-[22.5%]" />
 					</Link>
+				</h2>
+			</div>
+			<div className="flex w-full justify-between md:w-[60%] md:justify-end  md:space-x-6">
+				<Search />
+				<div className="flex hidden items-center justify-center md:flex xl:hidden">
+					<MobileSearch />
 				</div>
 				<div className="flex items-center justify-end gap-5">
 					<div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15" />
 					<div className="flex items-center gap-4">
-						<MobileSearch />
+						<div className="md:hidden">
+							<MobileSearch />
+						</div>
 						<HeaderLinks />
-						<ThemeToggle />
 					</div>
+					<div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15"></div>
+					<ThemeToggle />
+					<div className="hidden md:block md:h-5 md:w-px md:bg-zinc-900/10 md:dark:bg-white/15"></div>
+					<Socials />
 				</div>
 			</div>
 		</motion.div>
