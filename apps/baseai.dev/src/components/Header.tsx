@@ -170,7 +170,7 @@ export const Header = forwardRef<
 						aria-label="Home"
 						className="block w-full font-bold text-black md:hidden dark:text-white"
 					>
-						<BaseAILogo className="w-[10rem]" />
+						<BaseAILogo className="w-[10rem] " />
 					</Link>
 				</h2>
 			</div>
