@@ -470,19 +470,19 @@ export function Search() {
 	}, []);
 
 	return (
-		<div className="hidden lg:block lg:max-w-md lg:flex-auto">
+		<div className="hidden lg:max-w-md lg:flex-auto xl:block">
 			<button
 				type="button"
 				className="hidden h-10 w-full items-center gap-2 rounded-lg bg-background pl-2 pr-3 text-sm text-zinc-500 ring-1 ring-border transition hover:ring-border/20 ui-not-focus-visible:outline-none lg:flex dark:bg-white/5 dark:text-zinc-400 dark:shadow-inner dark:ring-inset dark:ring-border/10 dark:ring-white/10 dark:hover:ring-white/20"
 				{...buttonProps}
 			>
-				<SearchIcon className="h-5 w-5 stroke-current" />
-				Find something...
-				<kbd className="ml-auto text-2xs text-muted-foreground">
+				<SearchIcon className="h-5 w-5 flex-shrink-0 stroke-current" />
+				<span className="flex-start truncate">Find something...</span>
+				<kbd className="ml-auto flex-shrink-0 text-2xs text-muted-foreground">
 					<kbd className="font-sans">{modifierKey}</kbd>
 					<kbd className="font-sans">K</kbd>
 				</kbd>
-			</button>
+			</button> 
 			<Suspense fallback={null}>
 				<SearchDialog className="hidden lg:block" {...dialogProps} />
 			</Suspense>
@@ -494,17 +494,17 @@ export function MobileSearch() {
 	let { buttonProps, dialogProps } = useSearchProps();
 
 	return (
-		<div className="contents lg:hidden">
+		<div className="contents">
 			<button
 				type="button"
-				className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-zinc-900/5 ui-not-focus-visible:outline-none lg:hidden dark:hover:bg-white/5"
+				className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-zinc-900/5 ui-not-focus-visible:outline-none dark:hover:bg-white/5"
 				aria-label="Find something..."
 				{...buttonProps}
 			>
 				<SearchIcon className="h-5 w-5 stroke-zinc-900 dark:stroke-white" />
 			</button>
 			<Suspense fallback={null}>
-				<SearchDialog className="lg:hidden" {...dialogProps} />
+				<SearchDialog {...dialogProps} />
 			</Suspense>
 		</div>
 	);

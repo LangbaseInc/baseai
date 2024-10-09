@@ -27,11 +27,8 @@ export function Layout({
 					className="contents lg:pointer-events-none lg:fixed lg:inset-0 lg:z-40 lg:flex"
 				>
 					<div className="contents bg-background lg:pointer-events-auto lg:block lg:w-72 lg:overflow-y-auto lg:border-zinc-900/10 lg:px-6 lg:pb-8 lg:pt-6 xl:w-80 lg:dark:border-white/10">
-						<div className="hidden lg:flex mt-4">
-							<Link
-								href="/docs"
-								aria-label="Home"
-							>
+						<div className="mt-4 hidden lg:flex">
+							<Link href="/docs" aria-label="Home">
 								<BaseAILogo width="30%" />
 							</Link>
 						</div>

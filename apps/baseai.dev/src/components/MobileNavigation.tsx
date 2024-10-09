@@ -13,7 +13,6 @@ import { Dialog, Transition } from '@headlessui/react';
 import { motion } from 'framer-motion';
 import { create } from 'zustand';
 
-import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 
 function MenuIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -41,6 +40,7 @@ function XIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 		>
 			<path d="m1.5 1 7 7M8.5 1l-7 7" />
 		</svg>
+		
 	);
 }
 
@@ -67,6 +67,20 @@ function MobileNavigationDialog({
 		}
 	}, [pathname, searchParams, close, initialPathname, initialSearchParams]);
 
+	useEffect(() => {
+		const removeInertFromTopDiv = () => {
+			const topDiv = document.querySelector('div');
+
+			if (topDiv?.hasAttribute('inert')) {
+				topDiv.removeAttribute('inert');
+			}
+		};
+
+		const timer = setTimeout(removeInertFromTopDiv, 50);
+
+		return () => clearTimeout(timer);
+	}, [isOpen]);
+
 	function onClickDialog(event: React.MouseEvent<HTMLDivElement>) {
 		if (!(event.target instanceof HTMLElement)) {
 			return;
@@ -89,7 +103,7 @@ function MobileNavigationDialog({
 			<Dialog
 				onClickCapture={onClickDialog}
 				onClose={close}
-				className="fixed inset-0 z-50 lg:hidden"
+				className="fixed inset-0 z-10 lg:hidden"
 			>
 				<Transition.Child
 					as={Fragment}
@@ -100,22 +114,10 @@ function MobileNavigationDialog({
 					leaveFrom="opacity-100"
 					leaveTo="opacity-0"
 				>
-					<div className="fixed inset-0 top-14 bg-zinc-400/20 backdrop-blur-sm dark:bg-black/40" />
+					<div className="fixed inset-0 top-14 bg-zinc-400/20 backdrop-blur-sm md:top-28 dark:bg-black/40" />
 				</Transition.Child>
 
 				<Dialog.Panel>
-					<Transition.Child
-						as={Fragment}
-						enter="duration-300 ease-out"
-						enterFrom="opacity-0"
-						enterTo="opacity-100"
-						leave="duration-200 ease-in"
-						leaveFrom="opacity-100"
-						leaveTo="opacity-0"
-					>
-						<Header />
-					</Transition.Child>
-
 					<Transition.Child
 						as={Fragment}
 						enter="duration-500 ease-in-out"
@@ -127,7 +129,7 @@ function MobileNavigationDialog({
 					>
 						<motion.div
 							layoutScroll
-							className="fixed bottom-0 left-0 top-14 w-full overflow-y-auto bg-white px-4 pb-4 pt-6 shadow-lg shadow-zinc-900/10 ring-1 ring-zinc-900/7.5 min-[416px]:max-w-sm sm:px-6 sm:pb-10 dark:bg-zinc-900 dark:ring-zinc-800"
+							className="fixed bottom-0 left-0 top-14 w-full overflow-y-auto bg-white px-4 pb-4 pt-6 shadow-lg shadow-zinc-900/10 ring-1 ring-zinc-900/7.5 min-[416px]:max-w-sm sm:px-6 sm:pb-10 md:top-28 dark:bg-zinc-900 dark:ring-zinc-800"
 						>
 							<Navigation />
 						</motion.div>
@@ -154,7 +156,7 @@ export const useMobileNavigationStore = create<{
 	toggle: () => set(state => ({ isOpen: !state.isOpen }))
 }));
 
-export function MobileNavigation() {
+export function MobileNavigation(props: any) {
 	let isInsideMobileNavigation = useIsInsideMobileNavigation();
 	let { isOpen, toggle, close } = useMobileNavigationStore();
 	let ToggleIcon = isOpen ? XIcon : MenuIcon;
@@ -167,13 +169,14 @@ export function MobileNavigation() {
 				aria-label="Toggle navigation"
 				onClick={toggle}
 			>
-				<ToggleIcon className="w-2.5 stroke-zinc-900 dark:stroke-white" />
+				<ToggleIcon className="w-5 stroke-zinc-900 sm:w-5 dark:stroke-white" />
 			</button>
 			{!isInsideMobileNavigation && (
 				<Suspense fallback={null}>
 					<MobileNavigationDialog isOpen={isOpen} close={close} />
 				</Suspense>
 			)}
+			
 		</IsInsideMobileNavigationContext.Provider>
 	);
 }
