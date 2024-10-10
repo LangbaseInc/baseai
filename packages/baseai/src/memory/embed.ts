@@ -1,5 +1,6 @@
 import { heading } from '@/utils/heading';
 import { checkMemoryExists } from '@/utils/memory/check-memory-exist';
+import { deleteDocumentFromDB, loadDb } from '@/utils/memory/db/lib';
 import { generateEmbeddings } from '@/utils/memory/generate-embeddings';
 import {
 	handleGitSyncMemories,
@@ -55,12 +56,17 @@ export async function embedMemory({
 		const memoryConfig = await loadMemoryConfig(memoryName);
 
 		let filesToEmbed: string[] = [];
+		let filesToDelete: string[] = [];
 
 		if (memoryConfig?.useGitRepo) {
-			filesToEmbed = await handleGitSyncMemories({
-				memoryName: memoryName,
-				config: memoryConfig
-			});
+			const { filesToDeploy, filesToDelete: gitFilesToDelete } =
+				await handleGitSyncMemories({
+					memoryName: memoryName,
+					config: memoryConfig
+				});
+
+			filesToEmbed = filesToDeploy;
+			filesToDelete = gitFilesToDelete;
 
 			// Filter memory files to emebed
 			memoryFiles = memoryFiles.filter(doc =>
@@ -69,24 +75,66 @@ export async function embedMemory({
 		}
 
 		// 4- Generate embeddings.
-		s.message('Generating embeddings...');
-		const shouldOverwrite = memoryConfig?.useGitRepo ? true : overwrite;
-		const result = await generateEmbeddings({
-			memoryFiles,
-			memoryName,
-			overwrite: shouldOverwrite || false,
-			useLocalEmbeddings
-		});
-
-		if (memoryConfig?.useGitRepo) {
-			p.log.success('Synced memory files with git repository.');
-			await updateEmbeddedCommitHash(memoryName);
+		let embedResult = 'Embeddings updated.';
+		if (filesToEmbed && filesToEmbed.length > 0) {
+			s.message('Generating embeddings...');
+			const shouldOverwrite = memoryConfig?.useGitRepo ? true : overwrite;
+			embedResult = await generateEmbeddings({
+				memoryFiles,
+				memoryName,
+				overwrite: shouldOverwrite || false,
+				useLocalEmbeddings
+			});
 		}
 
-		s.stop(result);
+		if (memoryConfig?.useGitRepo) {
+			if (filesToDelete.length > 0) {
+				await deleteDocumentsFromDB({
+					memoryName,
+					filesToDelete
+				});
+			}
+			await updateEmbeddedCommitHash(memoryName);
+			p.log.info('Updated embedded commit hash.');
+			p.log.success('Synced memory files with git repository.');
+		}
+
+		s.stop(embedResult);
 	} catch (error: any) {
 		s.stop(`Stopped!`);
 		p.cancel(`FAILED: ${error.message}`);
+		process.exit(1);
+	}
+}
+
+export async function deleteDocumentsFromDB({
+	memoryName,
+	filesToDelete
+}: {
+	memoryName: string;
+	filesToDelete: string[];
+}) {
+	const s = p.spinner();
+	s.start('Detected files to delete. Deleting...');
+
+	try {
+		const memoryDb = await loadDb(memoryName);
+
+		for (const docName of filesToDelete) {
+			if (memoryDb.data.documents[docName]) {
+				await deleteDocumentFromDB({ db: memoryDb, docName });
+				p.log.info(`Deleted document: ${color.cyan(docName)}`);
+			}
+		}
+
+		s.stop(`Documents deleted from memory ${memoryName}.`);
+	} catch (error) {
+		s.stop('Stopped!');
+		if (error instanceof Error) {
+			p.cancel(`Failed to delete documents: ${error.message}`);
+		} else {
+			p.cancel(`Failed to delete documents. An unknown error occurred.`);
+		}
 		process.exit(1);
 	}
 }

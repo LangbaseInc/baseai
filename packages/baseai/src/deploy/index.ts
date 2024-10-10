@@ -16,7 +16,7 @@ import fs from 'fs/promises';
 import fetch from 'node-fetch';
 import path from 'path';
 import color from 'picocolors';
-import type { MemoryI } from 'types/memory';
+import { type MemoryI } from 'types/memory';
 import type { Pipe, PipeOld } from 'types/pipe';
 import { getStoredAuth } from './../auth/index';
 import {
@@ -484,16 +484,23 @@ export async function deployMemory({
 		p.log.step(`Processing documents for memory: ${memoryNameWithoutExt}`);
 
 		let filesToDeploy: string[] = [];
+		let filesToDelete: string[] = [];
 		let memoryDocs: MemoryDocumentI[] = [];
 
 		// Git sync memories
 		if (memoryObject.config?.useGitRepo) {
 			// Get names of files to deploy, i.e., changed or new files
-			filesToDeploy = await handleGitSyncMemories({
+			const {
+				filesToDeploy: gitFilesToDeploy,
+				filesToDelete: gitFilesToDelete
+			} = await handleGitSyncMemories({
 				memoryName: memoryNameWithoutExt,
 				config: memoryObject.config,
 				account
 			});
+
+			filesToDeploy = gitFilesToDeploy;
+			filesToDelete = gitFilesToDelete;
 
 			// Load all documents contents for the memory
 			memoryDocs = await loadMemoryFiles(memoryNameWithoutExt);
@@ -513,7 +520,6 @@ export async function deployMemory({
 			spinner.stop(
 				`No documents to deploy for memory: ${memoryNameWithoutExt}. Skipping.`
 			);
-			return;
 		}
 
 		spinner.stop(`Processed memory: ${memoryName.split('.')[0]}`);
@@ -525,7 +531,8 @@ export async function deployMemory({
 				documents: memoryDocs,
 				account,
 				overwrite,
-				isGitSync: memoryObject.config?.useGitRepo
+				isGitSync: memoryObject.config?.useGitRepo,
+				docsToDelete: filesToDelete
 			});
 			spinner.stop(`Deployment finished memory: ${memoryObject.name}`);
 		} catch (error) {
@@ -549,13 +556,15 @@ export async function upsertMemory({
 	documents,
 	account,
 	overwrite,
-	isGitSync = false
+	isGitSync = false,
+	docsToDelete = []
 }: {
 	memory: MemoryI;
 	documents: MemoryDocumentI[];
 	account: Account;
 	overwrite: boolean;
 	isGitSync?: boolean;
+	docsToDelete?: string[];
 }): Promise<void> {
 	const { createMemory } = getMemoryApiUrls({
 		account,
@@ -603,6 +612,21 @@ export async function upsertMemory({
 						documents,
 						overwrite
 					});
+
+					if (docsToDelete?.length > 0) {
+						await deleteDocumentsFromMemory({
+							documents: docsToDelete,
+							name: memory.name,
+							account
+						});
+					}
+
+					await updateDeployedCommitHash(memory.name);
+
+					p.log.info(
+						`Updated deployed commit hash for memory: ${memory.name}`
+					);
+
 					return;
 				}
 			}
@@ -620,7 +644,18 @@ export async function upsertMemory({
 		await uploadDocumentsToMemory({ documents, name, account });
 
 		if (isGitSync) {
+			if (docsToDelete?.length > 0) {
+				await deleteDocumentsFromMemory({
+					documents: docsToDelete,
+					name: memory.name,
+					account
+				});
+			}
+
 			await updateDeployedCommitHash(memory.name);
+			p.log.info(
+				`Updated deployed commit hash for memory: ${memory.name}`
+			);
 		}
 	} catch (error) {
 		dlog('Error in createNewMemory:', error);
@@ -655,6 +690,38 @@ export async function uploadDocumentsToMemory({
 			throw error;
 		}
 	}
+}
+
+export async function deleteDocumentsFromMemory({
+	documents,
+	name,
+	account
+}: {
+	documents: string[];
+	name: string;
+	account: Account;
+}) {
+	p.log.info(`Deleting documents from memory: ${name}`);
+
+	for (const doc of documents) {
+		try {
+			p.log.message(`Deleting document: ${doc} ....`);
+			await new Promise(resolve => setTimeout(resolve, 800)); // To avoid rate limiting
+
+			const deleteResponse = await deleteDocument({
+				documentName: doc,
+				memoryName: name,
+				account
+			});
+
+			dlog(`Delete response status: ${deleteResponse.status}`);
+
+			p.log.message(`Deleted document: ${doc}`);
+		} catch (error) {
+			throw error;
+		}
+	}
+	p.log.info(`Deleted documents from memory: ${name}`);
 }
 
 export async function handleExistingMemoryDeploy({
@@ -892,6 +959,44 @@ async function getSignedUploadUrl({
 	}
 }
 
+async function deleteDocument({
+	documentName,
+	memoryName,
+	account
+}: {
+	documentName: string;
+	memoryName: string;
+	account: Account;
+}) {
+	const { deleteDocument } = getMemoryApiUrls({
+		account,
+		memoryName,
+		documentName
+	});
+
+	try {
+		const response = await fetch(deleteDocument, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${account.apiKey}`
+			}
+		});
+
+		if (!response.ok) {
+			const errorData = (await response.json()) as ErrorResponse;
+			throw new Error(
+				`HTTP error! status: ${response.status}, message: ${errorData.error?.message}`
+			);
+		}
+
+		return response;
+	} catch (error) {
+		dlog('Error in deleteDocument:', error);
+		throw error;
+	}
+}
+
 async function uploadDocument(signedUrl: string, document: Blob) {
 	let mimeType = document.type;
 
@@ -930,16 +1035,19 @@ async function uploadDocument(signedUrl: string, document: Blob) {
 
 export function getMemoryApiUrls({
 	account,
-	memoryName
+	memoryName,
+	documentName
 }: {
 	account: Account;
 	memoryName: string;
+	documentName?: string;
 }) {
 	const isOrgAccount = account.apiKey.includes(':');
 	const ownerLogin = isOrgAccount
 		? account.apiKey.split(':')[0]
 		: account.login;
 	const baseUrl = `https://api.langbase.com/beta`;
+	const baseUrlV1 = `https://api.langbase.com/v1`;
 
 	// Create memory URL
 	const createUrlOrg = `${baseUrl}/org/${ownerLogin}/memorysets`;
@@ -955,9 +1063,13 @@ export function getMemoryApiUrls({
 	// Delete memory URL
 	const deleteMemory = `${baseUrl}/memorysets/${ownerLogin}/${memoryName}`;
 
+	// Delete document URL
+	const deleteDocument = `${baseUrlV1}/memory/${memoryName}/documents/${documentName}`;
+
 	return {
 		listDocuments,
 		deleteMemory,
+		deleteDocument,
 		createMemory: isOrgAccount ? createUrlOrg : createUrlUser,
 		uploadDocument: isOrgAccount ? uploadDocumentOrg : uploadDocumentUser
 	};

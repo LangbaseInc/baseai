@@ -6,7 +6,7 @@ import { MEMORYSETS } from './constants';
 import {
 	addChunksBulk,
 	addDocument,
-	deleteDocument,
+	deleteDocumentFromDB,
 	getDocument,
 	loadDb
 } from './db/lib';
@@ -53,7 +53,7 @@ export async function generateEmbeddings({
 			p.log.info(
 				`Removing existing embeddings for DOC: ${color.cyan(name)}`
 			);
-			await deleteDocument({
+			await deleteDocumentFromDB({
 				db: memoryDb,
 				docName: name
 			});

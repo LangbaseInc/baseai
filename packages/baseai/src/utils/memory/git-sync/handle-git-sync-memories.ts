@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import * as p from '@clack/prompts';
 import { saveDeployedCommitHashInMemoryConfig } from './save-deployed-commit-in-config';
-import { getChangedFilesBetweenCommits } from './get-changed-files-between-commits';
+import { getChangedAndDeletedFilesBetweenCommits } from './get-changed-files-between-commits';
 import type { MemoryConfigI } from 'types/memory';
 import { listMemoryDocuments, type Account } from '@/deploy';
 import { loadMemoryFilesFromCustomDir } from '../load-memory-files';
@@ -16,23 +16,27 @@ export async function handleGitSyncMemories({
 	memoryName: string;
 	config: MemoryConfigI;
 	account?: Account; // Undefined for local embed
-}): Promise<string[]> {
+}): Promise<{
+	filesToDeploy: string[];
+	filesToDelete: string[];
+}> {
+	const isEmbed = !account;
+
 	// Check for uncommitted changes
 	try {
 		execSync('git diff-index --quiet HEAD --');
 	} catch (error) {
 		p.log.error(
-			`There are uncommitted changes in the Git repository for deploying git-synced memory "${memoryName}".`
+			`There are uncommitted changes in the Git repository for ${isEmbed ? 'embedding' : 'deploying'} git-synced memory "${memoryName}".`
 		);
 		p.log.info(
-			'Please commit these changes before deploying. Aborting deployment.'
+			`Please commit these changes before ${isEmbed ? 'embedding' : 'deploying'}. Aborting.`
 		);
 		process.exit(1);
 	}
 
 	let filesToDeploy: string[] = [];
-
-	const isEmbed = !account;
+	let filesToDelete: string[] = [];
 
 	// Step 1:
 	// Fetch the uploaded documents and compare with the local documents
@@ -73,11 +77,15 @@ export async function handleGitSyncMemories({
 	}
 	// Step 2.2: Otherwise, get changed files between commits
 	else {
-		filesToDeploy = await getChangedFilesBetweenCommits({
-			oldCommit: lastHashUsed,
-			latestCommit: 'HEAD',
-			dirToTrack: config.dirToTrack
-		});
+		const { changedFiles, deletedFiles } =
+			await getChangedAndDeletedFilesBetweenCommits({
+				oldCommit: lastHashUsed,
+				latestCommit: 'HEAD',
+				dirToTrack: config.dirToTrack
+			});
+
+		filesToDeploy = changedFiles;
+		filesToDelete = deletedFiles;
 
 		if (filesToDeploy.length > 0) {
 			p.log.info(
@@ -88,27 +96,36 @@ export async function handleGitSyncMemories({
 			filesToDeploy.forEach(file => p.log.message(file));
 		} else {
 			const isEmbed = !account;
-			if (isEmbed) {
-				p.log.info(
-					`No changes detected for memory "${memoryName}" since last embedding.`
-				);
-			} else {
-				p.log.info(
-					`No changes detected for memory "${memoryName}" since last deployment.`
-				);
-			}
+			p.log.info(
+				`No file changes detected for memory "${memoryName}" since last ${isEmbed ? 'embedding' : 'deployment'}.`
+			);
+		}
+
+		if (filesToDelete.length > 0) {
+			p.log.info(
+				`Found ${filesToDelete.length} deleted files for memory "${memoryName}":`
+			);
+
+			// Print the deleted file names TODO: Remove because it may clutter the terminal?
+			filesToDelete.forEach(file => p.log.message(file));
+		} else {
+			const isEmbed = !account;
+			p.log.info(
+				`No deleted file detected for memory "${memoryName}" since last ${isEmbed ? 'embedding' : 'deployment'}.`
+			);
 		}
 	}
 
 	// Step 3
 	// Combine filesToDeploy with newFiles, avoid duplicates
 	filesToDeploy = [...new Set([...filesToDeploy, ...newFiles])];
+	// Filter the files to be deleted to make sure they are not in filesToDeploy
+	filesToDelete = filesToDelete.filter(file => !filesToDeploy.includes(file));
 
-	if (filesToDeploy.length === 0) {
-		return [];
-	}
-
-	return filesToDeploy;
+	return {
+		filesToDeploy,
+		filesToDelete
+	};
 }
 
 export async function updateDeployedCommitHash(memoryName: string) {

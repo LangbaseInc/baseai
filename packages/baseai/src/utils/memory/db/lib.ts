@@ -137,7 +137,7 @@ export function getDocument(
 	return db.data.documents[docName];
 }
 
-export async function deleteDocument({
+export async function deleteDocumentFromDB({
 	db,
 	docName
 }: {

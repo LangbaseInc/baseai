@@ -1,16 +1,16 @@
 import { execSync } from 'child_process';
 
 /**
- * Retrieves a list of files that have changed between two Git commits within a specified directory.
+ * Retrieves the list of changed and deleted files between two Git commits within a specified directory.
  *
- * @param {Object} options - The options for the function.
- * @param {string} options.oldCommit - The old commit reference to compare from.
- * @param {string} [options.latestCommit='HEAD'] - The latest commit reference to compare to. Defaults to 'HEAD'.
- * @param {string} options.dirToTrack - The directory to track for changes.
- * @returns {Promise<string[]>} A promise that resolves to an array of changed file paths.
- * @throws Will throw an error if the Git command fails or if the oldCommit is an empty string.
+ * @param {Object} params - The parameters for the function.
+ * @param {string} params.oldCommit - The old commit reference to compare from.
+ * @param {string} [params.latestCommit='HEAD'] - The latest commit reference to compare to. Defaults to 'HEAD'.
+ * @param {string} params.dirToTrack - The directory to track for changes.
+ * @returns {Promise<{ changedFiles: string[]; deletedFiles: string[] }>} - A promise that resolves to an object containing arrays of changed and deleted files.
+ * @throws {Error} - Throws an error if the Git command execution fails or if the commit references are invalid.
  */
-export async function getChangedFilesBetweenCommits({
+export async function getChangedAndDeletedFilesBetweenCommits({
 	oldCommit,
 	latestCommit = 'HEAD',
 	dirToTrack
@@ -18,7 +18,7 @@ export async function getChangedFilesBetweenCommits({
 	oldCommit: string;
 	latestCommit: string;
 	dirToTrack: string;
-}): Promise<string[]> {
+}): Promise<{ changedFiles: string[]; deletedFiles: string[] }> {
 	try {
 		// Validate inputs
 		if (oldCommit === '') {
@@ -27,22 +27,30 @@ export async function getChangedFilesBetweenCommits({
 
 		const repoPath = process.cwd();
 
-		// Construct the Git command to get changed files in the specific directory
-		let command = `git diff --name-only ${oldCommit} ${latestCommit} -- ${dirToTrack}`;
+		// Construct the Git commands to get changed and deleted files in the specific directory
+		const changedCommand = `git diff --diff-filter=ACMRT --name-only ${oldCommit} ${latestCommit} -- ${dirToTrack}`;
+		const deletedCommand = `git diff --diff-filter=D --name-only ${oldCommit} ${latestCommit} -- ${dirToTrack}`;
 
-		// Execute the Git command
-		const result = execSync(command, {
+		// Execute the Git commands
+		const changedResult = execSync(changedCommand, {
 			encoding: 'utf-8',
 			cwd: repoPath
 		}).trim();
 
-		// Process the result
-		let changedFiles = result.split('\n').filter(Boolean);
+		const deletedResult = execSync(deletedCommand, {
+			encoding: 'utf-8',
+			cwd: repoPath
+		}).trim();
+
+		// Process the results
+		let changedFiles = changedResult.split('\n').filter(Boolean);
+		let deletedFiles = deletedResult.split('\n').filter(Boolean);
 
 		// Resolve full paths
 		changedFiles = changedFiles.map(file => file.replace(/\//g, '-'));
+		deletedFiles = deletedFiles.map(file => file.replace(/\//g, '-'));
 
-		return changedFiles;
+		return { changedFiles, deletedFiles };
 	} catch (error) {
 		console.error('Error executing Git command:', error);
 		throw error;
