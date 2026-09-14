@@ -261,7 +261,7 @@ export class Pipe {
 		const providerString = this.pipe.model.split(':')[0];
 		const modelProvider = getProvider(providerString);
 		const isAnthropic = modelProvider === ANTHROPIC;
-		const hasTools = this.pipe.tools.length > 0;
+    const hasTools = this.hasTools;
 
 		// For SDK
 		// Run the given pipe name
